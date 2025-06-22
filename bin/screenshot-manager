@@ -1,0 +1,11 @@
+#!/bin/bash
+# Wrapper script for the screenshot manager
+
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+# Get the parent directory (project root)
+PROJECT_ROOT="$( dirname "$SCRIPT_DIR" )"
+
+# Run the Python script
+python3 "$PROJECT_ROOT/src/screenshot_manager.py" "$@"
