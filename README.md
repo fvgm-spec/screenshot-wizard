@@ -56,14 +56,17 @@ source ~/.zshrc
 This tool renames the most recent screenshot from your Screenshots directory and copies it to the Misc directory.
 
 ```bash
-# Basic usage (renames to "my_screenshot_20250622_123456.png")
+# Basic usage (renames to "my_screenshot.png")
 rename-screenshot my_screenshot
 
 # With location/category (creates a subdirectory)
-    rename-screenshot aws_console --location=aws
+rename-screenshot aws_console --location=aws
 
 # With custom extension
 rename-screenshot meeting_notes --ext=jpg
+
+# With timestamp (renames to "my_screenshot_20250622_123456.png")
+rename-screenshot my_screenshot --timestamp
 ```
 
 ### Advanced Usage: screenshot-manager
@@ -81,6 +84,9 @@ screenshot-manager rename database_schema --location=database
 
 # With custom extension
 screenshot-manager rename ui_mockup --ext=jpg
+
+# With timestamp
+screenshot-manager rename aws_lambda_function --timestamp
 ```
 
 #### Batch Renaming
@@ -91,6 +97,9 @@ screenshot-manager batch meeting_slides 3
 
 # With location/category
 screenshot-manager batch aws_tutorial 5 --location=tutorials
+
+# With timestamps
+screenshot-manager batch meeting_slides 3 --timestamp
 ```
 
 #### Listing Screenshots

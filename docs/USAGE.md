@@ -7,7 +7,7 @@ This document provides detailed usage instructions for Screenshot Wizard.
 ### rename-screenshot
 
 ```
-rename-screenshot <new_name> [--location=<location>] [--ext=<extension>]
+rename-screenshot <new_name> [--location=<location>] [--ext=<extension>] [--timestamp]
 ```
 
 #### Arguments:
@@ -15,11 +15,12 @@ rename-screenshot <new_name> [--location=<location>] [--ext=<extension>]
 - `new_name`: New name for the screenshot (without extension)
 - `--location`: Optional location/category for organizing screenshots
 - `--ext`: Optional file extension (default: png)
+- `--timestamp`: Add timestamp to filename (default: False)
 
 #### Examples:
 
 ```bash
-# Basic usage
+# Basic usage (renames to "aws_lambda_console.png")
 rename-screenshot aws_lambda_console
 
 # With a category/location
@@ -27,6 +28,9 @@ rename-screenshot database_diagram --location=database
 
 # With a different file extension
 rename-screenshot meeting_notes --ext=jpg
+
+# With timestamp (renames to "aws_lambda_console_20250622_123456.png")
+rename-screenshot aws_lambda_console --timestamp
 ```
 
 ### screenshot-manager

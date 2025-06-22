@@ -44,8 +44,16 @@ def get_most_recent_screenshot():
     screenshots.sort(key=lambda x: x.stat().st_mtime)
     return screenshots[-1]
 
-def rename_screenshot(screenshot_path, new_name, location=None, extension='png'):
-    """Rename and move the screenshot to the destination directory."""
+def rename_screenshot(screenshot_path, new_name, location=None, extension='png', add_timestamp=False):
+    """Rename and move the screenshot to the destination directory.
+    
+    Args:
+        screenshot_path: Path to the screenshot file
+        new_name: New name for the screenshot (without extension)
+        location: Optional location/category for organizing screenshots
+        extension: File extension (default: png)
+        add_timestamp: Whether to add a timestamp to the filename (default: False)
+    """
     # Create destination directory if it doesn't exist
     DESTINATION_DIR.mkdir(parents=True, exist_ok=True)
     
@@ -56,9 +64,12 @@ def rename_screenshot(screenshot_path, new_name, location=None, extension='png')
     else:
         dest_dir = DESTINATION_DIR
     
-    # Format the new filename with timestamp
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    new_filename = f"{new_name}_{timestamp}.{extension}"
+    # Format the new filename, with or without timestamp
+    if add_timestamp:
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        new_filename = f"{new_name}_{timestamp}.{extension}"
+    else:
+        new_filename = f"{new_name}.{extension}"
     
     # Create the destination path
     destination_path = dest_dir / new_filename
@@ -77,6 +88,7 @@ def main():
     parser.add_argument('new_name', help='New name for the screenshot (without extension)')
     parser.add_argument('--location', help='Optional location/category for organizing screenshots')
     parser.add_argument('--ext', default='png', help='File extension (default: png)')
+    parser.add_argument('--timestamp', action='store_true', help='Add timestamp to filename (default: False)')
     
     args = parser.parse_args()
     
@@ -88,7 +100,8 @@ def main():
         screenshot_path, 
         args.new_name, 
         args.location, 
-        args.ext
+        args.ext,
+        args.timestamp
     )
     
     # Print the new path for potential use in other scripts

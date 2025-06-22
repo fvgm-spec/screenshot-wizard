@@ -99,8 +99,16 @@ def get_image_info(image_path):
             'error': str(e)
         }
 
-def rename_screenshot(screenshot_path, new_name, location=None, extension='png'):
-    """Rename and move the screenshot to the destination directory."""
+def rename_screenshot(screenshot_path, new_name, location=None, extension='png', add_timestamp=False):
+    """Rename and move the screenshot to the destination directory.
+    
+    Args:
+        screenshot_path: Path to the screenshot file
+        new_name: New name for the screenshot (without extension)
+        location: Optional location/category for organizing screenshots
+        extension: File extension (default: png)
+        add_timestamp: Whether to add a timestamp to the filename (default: False)
+    """
     # Create destination directory if it doesn't exist
     DESTINATION_DIR.mkdir(parents=True, exist_ok=True)
     
@@ -111,9 +119,12 @@ def rename_screenshot(screenshot_path, new_name, location=None, extension='png')
     else:
         dest_dir = DESTINATION_DIR
     
-    # Format the new filename with timestamp
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    new_filename = f"{new_name}_{timestamp}.{extension}"
+    # Format the new filename, with or without timestamp
+    if add_timestamp:
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        new_filename = f"{new_name}_{timestamp}.{extension}"
+    else:
+        new_filename = f"{new_name}.{extension}"
     
     # Create the destination path
     destination_path = dest_dir / new_filename
@@ -127,13 +138,13 @@ def rename_screenshot(screenshot_path, new_name, location=None, extension='png')
     
     return destination_path
 
-def batch_rename_screenshots(screenshots, prefix, location=None, extension='png'):
+def batch_rename_screenshots(screenshots, prefix, location=None, extension='png', add_timestamp=False):
     """Batch rename multiple screenshots with sequential numbering."""
     renamed_paths = []
     
     for i, screenshot in enumerate(screenshots, 1):
         new_name = f"{prefix}_{i:02d}"
-        new_path = rename_screenshot(screenshot, new_name, location, extension)
+        new_path = rename_screenshot(screenshot, new_name, location, extension, add_timestamp)
         renamed_paths.append(new_path)
     
     return renamed_paths
@@ -204,7 +215,7 @@ def display_screenshot_info(screenshot_path):
 def cmd_rename(args):
     """Handle the rename command."""
     screenshot = get_screenshots(count=1)[0]
-    new_path = rename_screenshot(screenshot, args.new_name, args.location, args.ext)
+    new_path = rename_screenshot(screenshot, args.new_name, args.location, args.ext, args.timestamp)
     return new_path
 
 def cmd_batch(args):
@@ -213,7 +224,7 @@ def cmd_batch(args):
     if len(screenshots) < args.count:
         print(f"Warning: Only found {len(screenshots)} screenshots, but {args.count} were requested.")
     
-    renamed_paths = batch_rename_screenshots(screenshots, args.prefix, args.location, args.ext)
+    renamed_paths = batch_rename_screenshots(screenshots, args.prefix, args.location, args.ext, args.timestamp)
     return renamed_paths
 
 def cmd_list(args):
@@ -285,6 +296,7 @@ def main():
     rename_parser.add_argument('new_name', help='New name for the screenshot (without extension)')
     rename_parser.add_argument('--location', help='Optional location/category for organizing screenshots')
     rename_parser.add_argument('--ext', default='png', help='File extension (default: png)')
+    rename_parser.add_argument('--timestamp', action='store_true', help='Add timestamp to filename (default: False)')
     
     # Batch command
     batch_parser = subparsers.add_parser('batch', help='Batch rename multiple screenshots')
@@ -292,6 +304,7 @@ def main():
     batch_parser.add_argument('count', type=int, help='Number of recent screenshots to rename')
     batch_parser.add_argument('--location', help='Optional location/category for organizing screenshots')
     batch_parser.add_argument('--ext', default='png', help='File extension (default: png)')
+    batch_parser.add_argument('--timestamp', action='store_true', help='Add timestamp to filename (default: False)')
     
     # List command
     list_parser = subparsers.add_parser('list', help='List screenshots')
